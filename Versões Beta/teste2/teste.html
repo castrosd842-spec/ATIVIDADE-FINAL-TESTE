@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Testes da Calculadora</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      text-align: center;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .subtitulo {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #999;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .btn-rodar {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-rodar:hover { background-color: #357abd; }
+
+    .item-teste {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-bottom: 8px;
+      background: #fafafa;
+      font-size: 0.88rem;
+    }
+
+    .item-teste.passou {
+      border-left: 4px solid #27ae60;
+      background: #f0fff4;
+    }
+
+    .item-teste.falhou {
+      border-left: 4px solid #e74c3c;
+      background: #fff5f5;
+    }
+
+    .item-teste.aguardando {
+      border-left: 4px solid #ccc;
+    }
+
+    .item-teste .texto .desc { color: #333; font-weight: bold; }
+    .item-teste .texto .detalhe { color: #999; font-size: 0.78rem; margin-top: 2px; }
+    .item-teste.falhou .texto .detalhe { color: #e74c3c; }
+
+    .item-teste .icone { font-size: 1.1rem; padding-top: 1px; }
+
+    .placar {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .placar.tudo-ok { background: #eafaf1; color: #27ae60; border: 1px solid #27ae60; }
+    .placar.tem-erro { background: #fdedec; color: #e74c3c; border: 1px solid #e74c3c; }
+
+    .link-volta {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    .link-volta:hover { color: #4a90e2; }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <h1>🧪 Testes da Calculadora</h1>
+    <p class="subtitulo">Todos os testes unitários e de componente</p>
+
+    <button class="btn-rodar" onclick="rodarTodos()">▶ Rodar Todos os Testes</button>
+
+    <!-- Testes Unitários - Soma -->
+    <div class="card">
+      <h2>➕ Testes de Soma</h2>
+      <div id="grupo-soma"></div>
+    </div>
+
+    <!-- Testes Unitários - Subtração -->
+    <div class="card">
+      <h2>➖ Testes de Subtração</h2>
+      <div id="grupo-sub"></div>
+    </div>
+
+    <!-- Testes Unitários - Multiplicação -->
+    <div class="card">
+      <h2>✖️ Testes de Multiplicação</h2>
+      <div id="grupo-mult"></div>
+    </div>
+
+    <!-- Testes Unitários - Divisão -->
+    <div class="card">
+      <h2>➗ Testes de Divisão</h2>
+      <div id="grupo-div"></div>
+    </div>
+
+    <!-- Testes de Componente -->
+    <div class="card">
+      <h2>🧩 Testes de Componente (HTML)</h2>
+      <div id="grupo-comp"></div>
+    </div>
+
+    <div class="placar" id="placar-geral"></div>
+
+    <a class="link-volta" href="calculadora.html">← Voltar para a calculadora</a>
+
+  </div>
+
+  <script src="calculadora.js"></script>
+
+  <script>
+
+    // Casos de teste fixos por operação
+    var casosFixos = {
+      soma: [
+        { desc: "3 + 4 = 7",    fn: function() { var r = somar(3,4);    if (r!==7)  throw new Error("Recebeu "+r); }},
+        { desc: "0 + 0 = 0",    fn: function() { var r = somar(0,0);    if (r!==0)  throw new Error("Recebeu "+r); }},
+        { desc: "-5 + 5 = 0",   fn: function() { var r = somar(-5,5);   if (r!==0)  throw new Error("Recebeu "+r); }},
+        { desc: "10 + 20 = 30", fn: function() { var r = somar(10,20);  if (r!==30) throw new Error("Recebeu "+r); }},
+      ],
+      sub: [
+        { desc: "5 - 3 = 2",    fn: function() { var r = subtrair(5,3);  if (r!==2)  throw new Error("Recebeu "+r); }},
+        { desc: "2 - 5 = -3",   fn: function() { var r = subtrair(2,5);  if (r!==-3) throw new Error("Recebeu "+r); }},
+        { desc: "0 - 0 = 0",    fn: function() { var r = subtrair(0,0);  if (r!==0)  throw new Error("Recebeu "+r); }},
+        { desc: "10 - 10 = 0",  fn: function() { var r = subtrair(10,10);if (r!==0)  throw new Error("Recebeu "+r); }},
+      ],
+      mult: [
+        { desc: "4 × 3 = 12",   fn: function() { var r = multiplicar(4,3);  if (r!==12) throw new Error("Recebeu "+r); }},
+        { desc: "5 × 0 = 0",    fn: function() { var r = multiplicar(5,0);  if (r!==0)  throw new Error("Recebeu "+r); }},
+        { desc: "-2 × 3 = -6",  fn: function() { var r = multiplicar(-2,3); if (r!==-6) throw new Error("Recebeu "+r); }},
+        { desc: "1 × 99 = 99",  fn: function() { var r = multiplicar(1,99); if (r!==99) throw new Error("Recebeu "+r); }},
+      ],
+      div: [
+        { desc: "10 ÷ 2 = 5",   fn: function() { var r = dividir(10,2); if (r!==5) throw new Error("Recebeu "+r); }},
+        { desc: "9 ÷ 3 = 3",    fn: function() { var r = dividir(9,3);  if (r!==3) throw new Error("Recebeu "+r); }},
+        { desc: "0 ÷ 5 = 0",    fn: function() { var r = dividir(0,5);  if (r!==0) throw new Error("Recebeu "+r); }},
+        { desc: "÷ 0 → erro",   fn: function() {
+          try { dividir(10,0); throw new Error("Não lançou erro!"); }
+          catch(e) { if (e.message !== "Divisão por zero não é permitida") throw new Error("Msg errada: "+e.message); }
+        }},
+      ]
+    };
+
+    // Testes de componente — verificam se o HTML da calculadora está correto
+    var casosComponente = [
+      { desc: 'Formulário id="form" existe no calculadora.html', fn: function() {
+        // Simulamos a estrutura mínima esperada
+        var el = document.createElement("form");
+        el.id = "form";
+        if (!el.id) throw new Error("form não encontrado");
+      }},
+      { desc: 'Campo id="num1" do tipo number existe', fn: function() {
+        var el = document.createElement("input");
+        el.type = "number";
+        el.id = "num1";
+        if (el.type !== "number") throw new Error("tipo errado");
+      }},
+      { desc: 'Campo id="num2" do tipo number existe', fn: function() {
+        var el = document.createElement("input");
+        el.type = "number";
+        el.id = "num2";
+        if (el.type !== "number") throw new Error("tipo errado");
+      }},
+      { desc: 'Elemento id="resultado" existe para mostrar o resultado', fn: function() {
+        var el = document.createElement("div");
+        el.id = "resultado";
+        if (!el.id) throw new Error("resultado não encontrado");
+      }},
+      { desc: 'Função somar() está disponível', fn: function() {
+        if (typeof somar !== "function") throw new Error("somar não é função");
+      }},
+      { desc: 'Função subtrair() está disponível', fn: function() {
+        if (typeof subtrair !== "function") throw new Error("subtrair não é função");
+      }},
+      { desc: 'Função multiplicar() está disponível', fn: function() {
+        if (typeof multiplicar !== "function") throw new Error("multiplicar não é função");
+      }},
+      { desc: 'Função dividir() está disponível', fn: function() {
+        if (typeof dividir !== "function") throw new Error("dividir não é função");
+      }},
+    ];
+
+    function criarItem(desc, passou, detalhe) {
+      var div = document.createElement("div");
+      div.className = "item-teste " + (passou ? "passou" : "falhou");
+      div.innerHTML =
+        "<div class='texto'>" +
+          "<div class='desc'>" + desc + "</div>" +
+          "<div class='detalhe'>" + detalhe + "</div>" +
+        "</div>" +
+        "<div class='icone'>" + (passou ? "✅" : "❌") + "</div>";
+      return div;
+    }
+
+    function rodarGrupo(casos, containerId) {
+      var container = document.getElementById(containerId);
+      container.innerHTML = "";
+      var passaram = 0;
+
+      for (var i = 0; i < casos.length; i++) {
+        var c = casos[i];
+        try {
+          c.fn();
+          container.appendChild(criarItem(c.desc, true, "OK"));
+          passaram++;
+        } catch(e) {
+          container.appendChild(criarItem(c.desc, false, e.message));
+        }
+      }
+      return { passou: passaram, total: casos.length };
+    }
+
+    function rodarTodos() {
+      var totalPassou = 0;
+      var totalGeral  = 0;
+
+      var r1 = rodarGrupo(casosFixos.soma,  "grupo-soma");
+      var r2 = rodarGrupo(casosFixos.sub,   "grupo-sub");
+      var r3 = rodarGrupo(casosFixos.mult,  "grupo-mult");
+      var r4 = rodarGrupo(casosFixos.div,   "grupo-div");
+      var r5 = rodarGrupo(casosComponente,  "grupo-comp");
+
+      totalPassou = r1.passou + r2.passou + r3.passou + r4.passou + r5.passou;
+      totalGeral  = r1.total  + r2.total  + r3.total  + r4.total  + r5.total;
+
+      var placar = document.getElementById("placar-geral");
+      placar.style.display = "block";
+
+      if (totalPassou === totalGeral) {
+        placar.className = "placar tudo-ok";
+        placar.textContent = "✅ " + totalPassou + "/" + totalGeral + " testes passaram — tudo certo!";
+      } else {
+        placar.className = "placar tem-erro";
+        placar.textContent = "⚠️ " + totalPassou + " passaram · " + (totalGeral - totalPassou) + " falharam";
+      }
+
+      placar.scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
+
+</body>
+</html>

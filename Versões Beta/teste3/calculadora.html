@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Área Quadrada</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    /* Botões */
+    .botoes {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-calcular    { background-color: #4a90e2; color: white; }
+    .btn-calcular:hover { background-color: #357abd; }
+
+    .btn-unitario    { background-color: #27ae60; color: white; }
+    .btn-unitario:hover { background-color: #1e8449; }
+
+    .btn-componente  { background-color: #8e44ad; color: white; }
+    .btn-componente:hover { background-color: #6c3483; }
+
+    /* DIV de resultado — fica abaixo dos botões */
+    #div-resultado {
+      margin-top: 16px;
+      min-height: 48px;
+      background: #f7f9fc;
+      border: 1px solid #dde3ed;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #222;
+      display: none;
+    }
+
+    #div-resultado.erro { color: #e74c3c; font-size: 0.9rem; }
+
+    /* DIV de testes — também abaixo dos botões */
+    #div-testes {
+      margin-top: 12px;
+      display: none;
+    }
+
+    .titulo-teste {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 8px;
+    }
+
+    .item-teste {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-bottom: 7px;
+      background: #fafafa;
+      font-size: 0.85rem;
+    }
+
+    .item-teste.passou {
+      border-left: 4px solid #27ae60;
+      background: #f0fff4;
+    }
+
+    .item-teste.falhou {
+      border-left: 4px solid #e74c3c;
+      background: #fff5f5;
+    }
+
+    .item-teste .texto .desc   { color: #333; font-weight: bold; }
+    .item-teste .texto .detail { color: #999; font-size: 0.75rem; margin-top: 2px; }
+    .item-teste.falhou .texto .detail { color: #e74c3c; }
+    .item-teste .icone { font-size: 1rem; padding-top: 2px; }
+
+    .placar {
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .placar.ok  { background: #eafaf1; color: #27ae60; border: 1px solid #27ae60; }
+    .placar.err { background: #fdedec; color: #e74c3c; border: 1px solid #e74c3c; }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <h1>📐 Calculadora de Área Quadrada</h1>
+
+    <div class="card">
+
+      <!-- Inputs -->
+      <form id="form">
+        <label for="base">Base (cm):</label>
+        <input type="number" id="base" placeholder="Digite a base">
+
+        <label for="altura">Altura (cm):</label>
+        <input type="number" id="altura" placeholder="Digite a altura">
+      </form>
+
+      <!-- Botões -->
+      <div class="botoes">
+        <button class="btn btn-calcular"   onclick="executarCalculo()">📐 Calcular Área</button>
+        <button class="btn btn-unitario"   onclick="executarTesteUnitario()">🧪 Teste Unitário</button>
+        <button class="btn btn-componente" onclick="executarTesteComponente()">🧩 Teste de Componente</button>
+      </div>
+
+      <!-- DIV de resultado (abaixo dos botões) -->
+      <div id="div-resultado"></div>
+
+      <!-- DIV de testes (abaixo dos botões) -->
+      <div id="div-testes"></div>
+
+    </div>
+
+  </div>
+
+  <script src="calculadora.js"></script>
+
+  <script>
+
+    // ============================================================
+    // Calcular área com os valores digitados
+    // ============================================================
+
+    function executarCalculo() {
+      var base   = parseFloat(document.getElementById("base").value);
+      var altura = parseFloat(document.getElementById("altura").value);
+      var divRes = document.getElementById("div-resultado");
+
+      divRes.style.display = "block";
+      divRes.className = "";
+
+      if (isNaN(base) || isNaN(altura)) {
+        divRes.textContent = "⚠️ Digite a base e a altura!";
+        divRes.className = "erro";
+        return;
+      }
+
+      try {
+        var area = calcularArea(base, altura);
+        divRes.textContent = "Área = " + base + " × " + altura + " = " + area + " cm²";
+      } catch (erro) {
+        divRes.textContent = "❌ " + erro.message;
+        divRes.className = "erro";
+      }
+    }
+
+    // ============================================================
+    // Função auxiliar para criar item de teste na tela
+    // ============================================================
+
+    function criarItem(desc, passou, detalhe) {
+      var div = document.createElement("div");
+      div.className = "item-teste " + (passou ? "passou" : "falhou");
+      div.innerHTML =
+        "<div class='texto'>" +
+          "<div class='desc'>" + desc + "</div>" +
+          "<div class='detail'>" + detalhe + "</div>" +
+        "</div>" +
+        "<div class='icone'>" + (passou ? "✅" : "❌") + "</div>";
+      return div;
+    }
+
+    function mostrarTestes(titulo, casos) {
+      var divTestes = document.getElementById("div-testes");
+      divTestes.style.display = "block";
+      divTestes.innerHTML = "<div class='titulo-teste'>" + titulo + "</div>";
+
+      var passaram = 0;
+
+      for (var i = 0; i < casos.length; i++) {
+        var c = casos[i];
+        try {
+          c.fn();
+          divTestes.appendChild(criarItem(c.desc, true, "OK"));
+          passaram++;
+        } catch (erro) {
+          divTestes.appendChild(criarItem(c.desc, false, erro.message));
+        }
+      }
+
+      var placar = document.createElement("div");
+      if (passaram === casos.length) {
+        placar.className = "placar ok";
+        placar.textContent = "✅ " + passaram + "/" + casos.length + " testes passaram!";
+      } else {
+        placar.className = "placar err";
+        placar.textContent = "⚠️ " + passaram + " passaram · " + (casos.length - passaram) + " falharam";
+      }
+      divTestes.appendChild(placar);
+
+      divTestes.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // ============================================================
+    // TESTE UNITÁRIO
+    // Testa a função calcularArea() com valores conhecidos
+    // ============================================================
+
+    function executarTesteUnitario() {
+      var base   = parseFloat(document.getElementById("base").value);
+      var altura = parseFloat(document.getElementById("altura").value);
+
+      var casos = [
+        {
+          desc: "5 × 3 deve ser 15",
+          fn: function() {
+            var r = calcularArea(5, 3);
+            if (r !== 15) throw new Error("Esperado 15, recebeu " + r);
+          }
+        },
+        {
+          desc: "4 × 4 deve ser 16",
+          fn: function() {
+            var r = calcularArea(4, 4);
+            if (r !== 16) throw new Error("Esperado 16, recebeu " + r);
+          }
+        },
+        {
+          desc: "Base 0 deve lançar erro",
+          fn: function() {
+            try {
+              calcularArea(0, 5);
+              throw new Error("Não lançou erro!");
+            } catch(e) {
+              if (e.message !== "Base e altura devem ser maiores que zero") {
+                throw new Error("Mensagem errada: " + e.message);
+              }
+            }
+          }
+        }
+      ];
+
+      // Se o usuário digitou números válidos, testa com os valores dele também
+      if (!isNaN(base) && !isNaN(altura) && base > 0 && altura > 0) {
+        var esperado = base * altura;
+        casos.push({
+          desc: "Seu cálculo: " + base + " × " + altura + " = " + esperado,
+          fn: function() {
+            var r = calcularArea(base, altura);
+            if (r !== esperado) throw new Error("Esperado " + esperado + ", recebeu " + r);
+          }
+        });
+      }
+
+      mostrarTestes("🧪 Resultado — Teste Unitário", casos);
+    }
+
+    // ============================================================
+    // TESTE DE COMPONENTE
+    // Verifica se os elementos do HTML existem corretamente
+    // ============================================================
+
+    function executarTesteComponente() {
+      var casos = [
+        {
+          desc: "Formulário id='form' existe",
+          fn: function() {
+            var el = document.getElementById("form");
+            if (!el) throw new Error("Elemento form não encontrado");
+          }
+        },
+        {
+          desc: "Campo id='base' existe e é do tipo number",
+          fn: function() {
+            var el = document.getElementById("base");
+            if (!el) throw new Error("Campo base não encontrado");
+            if (el.type !== "number") throw new Error("Tipo esperado: number, recebeu: " + el.type);
+          }
+        },
+        {
+          desc: "Campo id='altura' existe e é do tipo number",
+          fn: function() {
+            var el = document.getElementById("altura");
+            if (!el) throw new Error("Campo altura não encontrado");
+            if (el.type !== "number") throw new Error("Tipo esperado: number, recebeu: " + el.type);
+          }
+        },
+        {
+          desc: "DIV id='div-resultado' existe para exibir resultado",
+          fn: function() {
+            var el = document.getElementById("div-resultado");
+            if (!el) throw new Error("div-resultado não encontrado");
+          }
+        },
+        {
+          desc: "Função calcularArea() está disponível",
+          fn: function() {
+            if (typeof calcularArea !== "function") {
+              throw new Error("calcularArea não é uma função");
+            }
+          }
+        }
+      ];
+
+      mostrarTestes("🧩 Resultado — Teste de Componente", casos);
+    }
+
+  </script>
+
+</body>
+</html>

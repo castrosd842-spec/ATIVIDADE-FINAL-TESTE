@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Testes da Calculadora</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 480px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      text-align: center;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    p.descricao {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      color: #444;
+      margin: 20px 0 10px 0;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+    }
+
+    .teste {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      border: 1px solid #e0e0e0;
+      font-size: 0.9rem;
+      background-color: #fafafa;
+    }
+
+    .teste .nome {
+      color: #333;
+    }
+
+    .teste .icone {
+      font-size: 1.1rem;
+    }
+
+    .teste .detalhe {
+      font-size: 0.78rem;
+      color: #999;
+    }
+
+    .teste.passou {
+      border-left: 4px solid #27ae60;
+      background-color: #f0fff4;
+    }
+
+    .teste.falhou {
+      border-left: 4px solid #e74c3c;
+      background-color: #fff5f5;
+    }
+
+    .teste.falhou .detalhe {
+      color: #e74c3c;
+    }
+
+    #btn-rodar {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 24px;
+      transition: background-color 0.2s;
+    }
+
+    #btn-rodar:hover {
+      background-color: #357abd;
+    }
+
+    #placar {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    #placar.tudo-ok {
+      background-color: #eafaf1;
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+
+    #placar.tem-erro {
+      background-color: #fdedec;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+
+    .link-volta {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #888;
+      text-decoration: none;
+    }
+
+    .link-volta:hover { color: #4a90e2; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧪 Testes da Calculadora</h1>
+    <p class="descricao">Clique no botão para rodar todos os testes</p>
+
+    <button id="btn-rodar" onclick="rodarTodosTestes()">▶ Rodar Todos os Testes</button>
+
+    <!-- Testes Unitários -->
+    <h2>Testes Unitários</h2>
+
+    <div class="teste" id="t-soma1">
+      <span class="nome">Soma: 3 + 4 deve ser 7</span>
+      <span class="detalhe" id="d-soma1">aguardando...</span>
+      <span class="icone" id="i-soma1">⏳</span>
+    </div>
+
+    <div class="teste" id="t-soma2">
+      <span class="nome">Soma: 0 + 0 deve ser 0</span>
+      <span class="detalhe" id="d-soma2">aguardando...</span>
+      <span class="icone" id="i-soma2">⏳</span>
+    </div>
+
+    <div class="teste" id="t-sub1">
+      <span class="nome">Subtração: 5 - 3 deve ser 2</span>
+      <span class="detalhe" id="d-sub1">aguardando...</span>
+      <span class="icone" id="i-sub1">⏳</span>
+    </div>
+
+    <div class="teste" id="t-sub2">
+      <span class="nome">Subtração: 2 - 5 deve ser -3</span>
+      <span class="detalhe" id="d-sub2">aguardando...</span>
+      <span class="icone" id="i-sub2">⏳</span>
+    </div>
+
+    <div class="teste" id="t-mult1">
+      <span class="nome">Multiplicação: 4 × 3 deve ser 12</span>
+      <span class="detalhe" id="d-mult1">aguardando...</span>
+      <span class="icone" id="i-mult1">⏳</span>
+    </div>
+
+    <div class="teste" id="t-mult2">
+      <span class="nome">Multiplicação: 5 × 0 deve ser 0</span>
+      <span class="detalhe" id="d-mult2">aguardando...</span>
+      <span class="icone" id="i-mult2">⏳</span>
+    </div>
+
+    <div class="teste" id="t-div1">
+      <span class="nome">Divisão: 10 ÷ 2 deve ser 5</span>
+      <span class="detalhe" id="d-div1">aguardando...</span>
+      <span class="icone" id="i-div1">⏳</span>
+    </div>
+
+    <div class="teste" id="t-div2">
+      <span class="nome">Divisão: 10 ÷ 0 deve lançar erro</span>
+      <span class="detalhe" id="d-div2">aguardando...</span>
+      <span class="icone" id="i-div2">⏳</span>
+    </div>
+
+    <!-- Testes de Componente -->
+    <h2>Testes de Componente</h2>
+
+    <div class="teste" id="t-form">
+      <span class="nome">Formulário com id="form" existe</span>
+      <span class="detalhe" id="d-form">aguardando...</span>
+      <span class="icone" id="i-form">⏳</span>
+    </div>
+
+    <div class="teste" id="t-num1">
+      <span class="nome">Campo id="num1" existe</span>
+      <span class="detalhe" id="d-num1">aguardando...</span>
+      <span class="icone" id="i-num1">⏳</span>
+    </div>
+
+    <div class="teste" id="t-num2">
+      <span class="nome">Campo id="num2" existe</span>
+      <span class="detalhe" id="d-num2">aguardando...</span>
+      <span class="icone" id="i-num2">⏳</span>
+    </div>
+
+    <div class="teste" id="t-res">
+      <span class="nome">Elemento id="resultado" existe</span>
+      <span class="detalhe" id="d-res">aguardando...</span>
+      <span class="icone" id="i-res">⏳</span>
+    </div>
+
+    <div id="placar"></div>
+
+    <a class="link-volta" href="calculadora.html">← Voltar para a calculadora</a>
+  </div>
+
+  <!-- Importa as funções da calculadora -->
+  <script src="calculadora.js"></script>
+
+  <script>
+    // =========================================
+    // Função auxiliar para marcar resultado
+    // =========================================
+
+    function marcar(id, passou, detalhe) {
+      var linha   = document.getElementById("t-" + id);
+      var icone   = document.getElementById("i-" + id);
+      var detEl   = document.getElementById("d-" + id);
+
+      if (passou) {
+        linha.classList.add("passou");
+        icone.textContent = "✅";
+        detEl.textContent = detalhe || "OK";
+      } else {
+        linha.classList.add("falhou");
+        icone.textContent = "❌";
+        detEl.textContent = detalhe || "Falhou";
+      }
+    }
+
+    // =========================================
+    // Roda todos os testes ao clicar no botão
+    // =========================================
+
+    function rodarTodosTestes() {
+      var totalTestes = 0;
+      var totalPassou = 0;
+
+      // ----- Função de teste individual -----
+      function testar(id, fn) {
+        totalTestes++;
+        try {
+          fn();
+          marcar(id, true, "passou");
+          totalPassou++;
+        } catch (erro) {
+          marcar(id, false, erro.message);
+        }
+      }
+
+      // =========================================
+      // TESTES UNITÁRIOS
+      // Testam cada função matemática isolada
+      // =========================================
+
+      testar("soma1", function() {
+        var resultado = somar(3, 4);
+        if (resultado !== 7) throw new Error("Esperado 7, recebeu " + resultado);
+      });
+
+      testar("soma2", function() {
+        var resultado = somar(0, 0);
+        if (resultado !== 0) throw new Error("Esperado 0, recebeu " + resultado);
+      });
+
+      testar("sub1", function() {
+        var resultado = subtrair(5, 3);
+        if (resultado !== 2) throw new Error("Esperado 2, recebeu " + resultado);
+      });
+
+      testar("sub2", function() {
+        var resultado = subtrair(2, 5);
+        if (resultado !== -3) throw new Error("Esperado -3, recebeu " + resultado);
+      });
+
+      testar("mult1", function() {
+        var resultado = multiplicar(4, 3);
+        if (resultado !== 12) throw new Error("Esperado 12, recebeu " + resultado);
+      });
+
+      testar("mult2", function() {
+        var resultado = multiplicar(5, 0);
+        if (resultado !== 0) throw new Error("Esperado 0, recebeu " + resultado);
+      });
+
+      testar("div1", function() {
+        var resultado = dividir(10, 2);
+        if (resultado !== 5) throw new Error("Esperado 5, recebeu " + resultado);
+      });
+
+      testar("div2", function() {
+        try {
+          dividir(10, 0);
+          throw new Error("Deveria ter lançado um erro!");
+        } catch (e) {
+          if (e.message !== "Divisão por zero não é permitida") {
+            throw new Error("Mensagem de erro incorreta: " + e.message);
+          }
+        }
+      });
+
+      // =========================================
+      // TESTES DE COMPONENTE
+      // Verificam se os elementos HTML existem
+      // =========================================
+
+      testar("form", function() {
+        var el = document.getElementById("form-calc");
+        if (!el) throw new Error("Elemento form não encontrado");
+      });
+
+      testar("num1", function() {
+        var el = document.getElementById("num1-calc");
+        if (!el) throw new Error("Campo num1 não encontrado");
+      });
+
+      testar("num2", function() {
+        var el = document.getElementById("num2-calc");
+        if (!el) throw new Error("Campo num2 não encontrado");
+      });
+
+      testar("res", function() {
+        var el = document.getElementById("resultado-calc");
+        if (!el) throw new Error("Elemento resultado não encontrado");
+      });
+
+      // =========================================
+      // Placar final
+      // =========================================
+
+      var placar = document.getElementById("placar");
+      placar.style.display = "block";
+
+      if (totalPassou === totalTestes) {
+        placar.className = "tudo-ok";
+        placar.textContent = "✅ " + totalPassou + "/" + totalTestes + " testes passaram — tudo certo!";
+      } else {
+        placar.className = "tem-erro";
+        placar.textContent = "⚠️ " + totalPassou + " passaram · " + (totalTestes - totalPassou) + " falharam";
+      }
+    }
+  </script>
+
+  <!--
+    Elementos ocultos que simulam o formulário da calculadora
+    para que os testes de componente possam encontrá-los
+  -->
+  <div style="display:none;">
+    <form id="form-calc">
+      <input type="number" id="num1-calc">
+      <input type="number" id="num2-calc">
+    </form>
+    <h2 id="resultado-calc"></h2>
+  </div>
+
+</body>
+</html>
