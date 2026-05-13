@@ -4,116 +4,328 @@
   <meta charset="UTF-8">
   <title>Calculadora</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      padding: 40px;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .calculadora {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      width: 320px;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
     }
 
     h1 {
       font-size: 1.4rem;
-      margin-bottom: 20px;
       text-align: center;
       color: #333;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 20px;
     }
 
     label {
-      font-size: 0.9rem;
-      color: #555;
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 4px;
     }
 
     input[type="number"] {
       width: 100%;
-      padding: 8px 10px;
-      margin: 6px 0 14px 0;
+      padding: 10px 12px;
+      font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 1rem;
-      box-sizing: border-box;
+      margin-bottom: 14px;
     }
 
-    .botoes {
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    /* Remove setas */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .display {
+      background: #f7f9fc;
+      border: 1px solid #dde3ed;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: right;
+      color: #222;
+      min-height: 52px;
+      margin-bottom: 20px;
+    }
+
+    .display.erro {
+      color: #e74c3c;
+      font-size: 0.95rem;
+    }
+
+    /* Grade de botões */
+    .grid-botoes {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 4px;
     }
 
-    button {
-      padding: 10px;
-      font-size: 1rem;
+    .btn-op {
+      padding: 14px 10px;
+      font-size: 0.95rem;
+      font-weight: bold;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       background-color: #4a90e2;
       color: white;
-      font-weight: bold;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, transform 0.1s;
     }
 
-    button:hover {
+    .btn-op:hover {
       background-color: #357abd;
     }
 
-    #resultado {
-      margin-top: 20px;
-      font-size: 1.2rem;
+    .btn-op:active {
+      transform: scale(0.97);
+    }
+
+    /* Área de resultados dos testes */
+    #area-testes {
+      display: none;
+    }
+
+    .card-testes h2 {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .card-testes .subtitulo {
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .item-teste {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-bottom: 8px;
+      background: #fafafa;
+      font-size: 0.88rem;
+    }
+
+    .item-teste.passou {
+      border-left: 4px solid #27ae60;
+      background: #f0fff4;
+    }
+
+    .item-teste.falhou {
+      border-left: 4px solid #e74c3c;
+      background: #fff5f5;
+    }
+
+    .item-teste .texto {
+      flex: 1;
+    }
+
+    .item-teste .texto .desc {
+      color: #333;
       font-weight: bold;
+    }
+
+    .item-teste .texto .detalhe {
+      color: #999;
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    .item-teste.falhou .texto .detalhe {
+      color: #e74c3c;
+    }
+
+    .item-teste .icone {
+      font-size: 1.1rem;
+      padding-top: 1px;
+    }
+
+    .placar {
       text-align: center;
-      color: #222;
-      min-height: 30px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+    .placar.tudo-ok {
+      background: #eafaf1;
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+
+    .placar.tem-erro {
+      background: #fdedec;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
     }
 
     .link-teste {
       display: block;
       text-align: center;
-      margin-top: 20px;
-      font-size: 0.85rem;
-      color: #888;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #aaa;
       text-decoration: none;
     }
 
-    .link-teste:hover {
-      color: #4a90e2;
-    }
+    .link-teste:hover { color: #4a90e2; }
   </style>
 </head>
 <body>
 
-  <div class="calculadora">
-    <h1>Calculadora Simples</h1>
+  <div class="wrapper">
 
-    <form id="form">
-      <label for="num1">Número 1:</label>
-      <input type="number" id="num1" placeholder="Digite o número 1">
+    <h1>🧮 Calculadora Simples</h1>
 
-      <label for="num2">Número 2:</label>
-      <input type="number" id="num2" placeholder="Digite o número 2">
+    <div class="card">
+      <form id="form">
+        <label for="num1">Número 1:</label>
+        <input type="number" id="num1" placeholder="Digite o primeiro número">
 
-      <div class="botoes">
-        <button type="button" onclick="calcular('+')">Somar</button>
-        <button type="button" onclick="calcular('-')">Subtrair</button>
-        <button type="button" onclick="calcular('*')">Multiplicar</button>
-        <button type="button" onclick="calcular('/')">Dividir</button>
+        <label for="num2">Número 2:</label>
+        <input type="number" id="num2" placeholder="Digite o segundo número">
+      </form>
+
+      <div class="display" id="resultado">_</div>
+
+      <div class="grid-botoes">
+        <button class="btn-op" onclick="executar('somar')">➕ Somar</button>
+        <button class="btn-op" onclick="executar('subtrair')">➖ Subtrair</button>
+        <button class="btn-op" onclick="executar('multiplicar')">✖️ Multiplicar</button>
+        <button class="btn-op" onclick="executar('dividir')">➗ Dividir</button>
       </div>
-    </form>
+    </div>
 
-    <h2 id="resultado"></h2>
+    <!-- Área de testes aparece após clicar -->
+    <div id="area-testes">
+      <div class="card card-testes">
+        <h2 id="titulo-teste"></h2>
+        <p class="subtitulo">Testes rodados ao clicar no botão</p>
+        <div id="lista-testes"></div>
+        <div class="placar" id="placar"></div>
+      </div>
+      <a class="link-teste" href="teste.html">📋 Ver página completa de testes</a>
+    </div>
 
-    <a class="link-teste" href="teste.html">🧪 Ver página de testes</a>
   </div>
 
   <script src="calculadora.js"></script>
+
+  <script>
+    function executar(operacao) {
+      var n1 = parseFloat(document.getElementById("num1").value);
+      var n2 = parseFloat(document.getElementById("num2").value);
+      var displayEl = document.getElementById("resultado");
+
+      // --- Valida os inputs ---
+      if (isNaN(n1) || isNaN(n2)) {
+        displayEl.textContent = "⚠️ Digite dois números válidos!";
+        displayEl.className = "display erro";
+        return;
+      }
+
+      // --- Calcula o resultado ---
+      var res;
+      try {
+        if (operacao === "somar")      res = somar(n1, n2);
+        if (operacao === "subtrair")   res = subtrair(n1, n2);
+        if (operacao === "multiplicar") res = multiplicar(n1, n2);
+        if (operacao === "dividir")    res = dividir(n1, n2);
+        displayEl.textContent = "Resultado: " + res;
+        displayEl.className = "display";
+      } catch (erro) {
+        displayEl.textContent = "❌ " + erro.message;
+        displayEl.className = "display erro";
+      }
+
+      // --- Roda os testes automaticamente ---
+      var resultados = rodarTestes(operacao, n1, n2);
+      mostrarTestes(operacao, resultados);
+    }
+
+    function mostrarTestes(operacao, resultados) {
+      var nomes = {
+        somar: "Testes da Soma ➕",
+        subtrair: "Testes da Subtração ➖",
+        multiplicar: "Testes da Multiplicação ✖️",
+        dividir: "Testes da Divisão ➗"
+      };
+
+      document.getElementById("titulo-teste").textContent = nomes[operacao];
+      document.getElementById("area-testes").style.display = "block";
+
+      var lista = document.getElementById("lista-testes");
+      lista.innerHTML = "";
+
+      var passaram = 0;
+
+      for (var i = 0; i < resultados.length; i++) {
+        var t = resultados[i];
+        var div = document.createElement("div");
+        div.className = "item-teste " + (t.passou ? "passou" : "falhou");
+
+        div.innerHTML =
+          "<div class='texto'>" +
+            "<div class='desc'>" + t.descricao + "</div>" +
+            "<div class='detalhe'>" + t.detalhe + "</div>" +
+          "</div>" +
+          "<div class='icone'>" + (t.passou ? "✅" : "❌") + "</div>";
+
+        lista.appendChild(div);
+
+        if (t.passou) passaram++;
+      }
+
+      // Placar final
+      var placar = document.getElementById("placar");
+      if (passaram === resultados.length) {
+        placar.className = "placar tudo-ok";
+        placar.textContent = "✅ " + passaram + "/" + resultados.length + " testes passaram!";
+      } else {
+        placar.className = "placar tem-erro";
+        placar.textContent = "⚠️ " + passaram + " passaram · " + (resultados.length - passaram) + " falharam";
+      }
+
+      // Rola suavemente até os testes
+      document.getElementById("area-testes").scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
 
 </body>
 </html>
