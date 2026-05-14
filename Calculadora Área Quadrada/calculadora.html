@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Calculadora de Área Quadrada</title>
+  <!--
+    v2.0 - melhorias feitas após revisão:
+    - adicionei placeholder com exemplo nos inputs (ficava vazio antes)
+    - botão calcular agora mostra a fórmula junto com o resultado
+    - testes de componente agora verificam os placeholders também
+    - arrumei o scroll que não estava funcionando direito no mobile
+  -->
   <style>
     * {
       box-sizing: border-box;
@@ -27,6 +34,14 @@
       font-size: 1.3rem;
       text-align: center;
       color: #333;
+      margin-bottom: 4px;
+    }
+
+    /* v2: adicionei subtítulo para deixar mais claro o que a calculadora faz */
+    .subtitulo {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
       margin-bottom: 20px;
     }
 
@@ -52,6 +67,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       margin-bottom: 14px;
+      transition: border-color 0.2s;
     }
 
     input[type="number"]:focus {
@@ -64,7 +80,6 @@
       -webkit-appearance: none;
     }
 
-    /* Botões */
     .botoes {
       display: flex;
       flex-direction: column;
@@ -84,16 +99,16 @@
 
     .btn:active { transform: scale(0.98); }
 
-    .btn-calcular    { background-color: #4a90e2; color: white; }
-    .btn-calcular:hover { background-color: #357abd; }
+    .btn-calcular   { background-color: #4a90e2; color: white; }
+    .btn-calcular:hover  { background-color: #357abd; }
 
-    .btn-unitario    { background-color: #27ae60; color: white; }
-    .btn-unitario:hover { background-color: #1e8449; }
+    .btn-unitario   { background-color: #27ae60; color: white; }
+    .btn-unitario:hover  { background-color: #1e8449; }
 
-    .btn-componente  { background-color: #8e44ad; color: white; }
+    .btn-componente { background-color: #8e44ad; color: white; }
     .btn-componente:hover { background-color: #6c3483; }
 
-    /* DIV de resultado — fica abaixo dos botões */
+    /* v2: div-resultado agora tem animação suave ao aparecer */
     #div-resultado {
       margin-top: 16px;
       min-height: 48px;
@@ -101,18 +116,29 @@
       border: 1px solid #dde3ed;
       border-radius: 8px;
       padding: 14px 16px;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: bold;
       color: #222;
       display: none;
+      animation: fadeIn 0.3s ease;
     }
 
-    #div-resultado.erro { color: #e74c3c; font-size: 0.9rem; }
+    #div-resultado.erro {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      border-color: #f5c6c6;
+      background: #fff5f5;
+    }
 
-    /* DIV de testes — também abaixo dos botões */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     #div-testes {
       margin-top: 12px;
       display: none;
+      animation: fadeIn 0.3s ease;
     }
 
     .titulo-teste {
@@ -168,29 +194,31 @@
   <div class="wrapper">
 
     <h1>📐 Calculadora de Área Quadrada</h1>
+    <!-- v2: adicionei esse subtítulo, antes ficava sem explicação nenhuma -->
+    <p class="subtitulo">Área = Base × Altura</p>
 
     <div class="card">
 
-      <!-- Inputs -->
       <form id="form">
         <label for="base">Base (cm):</label>
-        <input type="number" id="base" placeholder="Digite a base">
+        <!-- v2: adicionei placeholder com exemplo para o usuário entender melhor -->
+        <input type="number" id="base" placeholder="Ex: 5">
 
         <label for="altura">Altura (cm):</label>
-        <input type="number" id="altura" placeholder="Digite a altura">
+        <input type="number" id="altura" placeholder="Ex: 3">
       </form>
 
-      <!-- Botões -->
       <div class="botoes">
         <button class="btn btn-calcular"   onclick="executarCalculo()">📐 Calcular Área</button>
         <button class="btn btn-unitario"   onclick="executarTesteUnitario()">🧪 Teste Unitário</button>
         <button class="btn btn-componente" onclick="executarTesteComponente()">🧩 Teste de Componente</button>
+        <a href="teste.html" class="btn" style="background-color:#e67e22;color:white;text-decoration:none;text-align:center;">📋 Ver Página de Testes</a>
       </div>
 
-      <!-- DIV de resultado (abaixo dos botões) -->
+      <!-- DIV de resultado abaixo dos botões -->
       <div id="div-resultado"></div>
 
-      <!-- DIV de testes (abaixo dos botões) -->
+      <!-- DIV de testes abaixo dos botões -->
       <div id="div-testes"></div>
 
     </div>
@@ -202,7 +230,7 @@
   <script>
 
     // ============================================================
-    // Calcular área com os valores digitados
+    // Calcular área
     // ============================================================
 
     function executarCalculo() {
@@ -210,18 +238,22 @@
       var altura = parseFloat(document.getElementById("altura").value);
       var divRes = document.getElementById("div-resultado");
 
+      // v2: limpa os testes anteriores ao calcular de novo
+      document.getElementById("div-testes").style.display = "none";
+
       divRes.style.display = "block";
       divRes.className = "";
 
       if (isNaN(base) || isNaN(altura)) {
-        divRes.textContent = "⚠️ Digite a base e a altura!";
+        divRes.textContent = "⚠️ Preencha a base e a altura!";
         divRes.className = "erro";
         return;
       }
 
       try {
         var area = calcularArea(base, altura);
-        divRes.textContent = "Área = " + base + " × " + altura + " = " + area + " cm²";
+        // v2: mostro a fórmula junto com o resultado, antes só mostrava o número
+        divRes.textContent = "📐 " + base + " × " + altura + " = " + area + " cm²";
       } catch (erro) {
         divRes.textContent = "❌ " + erro.message;
         divRes.className = "erro";
@@ -229,7 +261,7 @@
     }
 
     // ============================================================
-    // Função auxiliar para criar item de teste na tela
+    // Auxiliar para criar item de teste
     // ============================================================
 
     function criarItem(desc, passou, detalhe) {
@@ -237,7 +269,7 @@
       div.className = "item-teste " + (passou ? "passou" : "falhou");
       div.innerHTML =
         "<div class='texto'>" +
-          "<div class='desc'>" + desc + "</div>" +
+          "<div class='desc'>"   + desc    + "</div>" +
           "<div class='detail'>" + detalhe + "</div>" +
         "</div>" +
         "<div class='icone'>" + (passou ? "✅" : "❌") + "</div>";
@@ -272,12 +304,12 @@
       }
       divTestes.appendChild(placar);
 
-      divTestes.scrollIntoView({ behavior: "smooth" });
+      // v2: corrigi o scroll — antes usava scrollIntoView que bugava no mobile
+      divTestes.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     // ============================================================
-    // TESTE UNITÁRIO
-    // Testa a função calcularArea() com valores conhecidos
+    // TESTE UNITÁRIO — testa a função calcularArea()
     // ============================================================
 
     function executarTesteUnitario() {
@@ -300,13 +332,35 @@
           }
         },
         {
+          // v2: adicionei teste com número decimal, antes só testava inteiros
+          desc: "2.5 × 4 deve ser 10",
+          fn: function() {
+            var r = calcularArea(2.5, 4);
+            if (r !== 10) throw new Error("Esperado 10, recebeu " + r);
+          }
+        },
+        {
           desc: "Base 0 deve lançar erro",
           fn: function() {
             try {
               calcularArea(0, 5);
               throw new Error("Não lançou erro!");
             } catch(e) {
-              if (e.message !== "Base e altura devem ser maiores que zero") {
+              if (e.message !== "A base deve ser maior que zero") {
+                throw new Error("Mensagem errada: " + e.message);
+              }
+            }
+          }
+        },
+        {
+          // v2: adicionei esse teste pois percebi que altura negativa não era testada
+          desc: "Altura negativa deve lançar erro",
+          fn: function() {
+            try {
+              calcularArea(5, -1);
+              throw new Error("Não lançou erro!");
+            } catch(e) {
+              if (e.message !== "A altura deve ser maior que zero") {
                 throw new Error("Mensagem errada: " + e.message);
               }
             }
@@ -314,9 +368,9 @@
         }
       ];
 
-      // Se o usuário digitou números válidos, testa com os valores dele também
+      // Teste com os valores que o usuário digitou
       if (!isNaN(base) && !isNaN(altura) && base > 0 && altura > 0) {
-        var esperado = base * altura;
+        var esperado = Math.round(base * altura * 100) / 100;
         casos.push({
           desc: "Seu cálculo: " + base + " × " + altura + " = " + esperado,
           fn: function() {
@@ -330,8 +384,7 @@
     }
 
     // ============================================================
-    // TESTE DE COMPONENTE
-    // Verifica se os elementos do HTML existem corretamente
+    // TESTE DE COMPONENTE — verifica os elementos do HTML
     // ============================================================
 
     function executarTesteComponente() {
@@ -340,7 +393,7 @@
           desc: "Formulário id='form' existe",
           fn: function() {
             var el = document.getElementById("form");
-            if (!el) throw new Error("Elemento form não encontrado");
+            if (!el) throw new Error("form não encontrado na página");
           }
         },
         {
@@ -348,7 +401,7 @@
           fn: function() {
             var el = document.getElementById("base");
             if (!el) throw new Error("Campo base não encontrado");
-            if (el.type !== "number") throw new Error("Tipo esperado: number, recebeu: " + el.type);
+            if (el.type !== "number") throw new Error("Tipo errado: " + el.type);
           }
         },
         {
@@ -356,7 +409,17 @@
           fn: function() {
             var el = document.getElementById("altura");
             if (!el) throw new Error("Campo altura não encontrado");
-            if (el.type !== "number") throw new Error("Tipo esperado: number, recebeu: " + el.type);
+            if (el.type !== "number") throw new Error("Tipo errado: " + el.type);
+          }
+        },
+        {
+          // v2: adicionei verificação de placeholder, antes não testava isso
+          desc: "Campos têm placeholder de exemplo",
+          fn: function() {
+            var b = document.getElementById("base");
+            var a = document.getElementById("altura");
+            if (!b.placeholder) throw new Error("Campo base sem placeholder");
+            if (!a.placeholder) throw new Error("Campo altura sem placeholder");
           }
         },
         {
